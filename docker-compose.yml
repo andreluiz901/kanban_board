@@ -1,0 +1,13 @@
+services:
+  postgres:
+    container_name: kanban_board-container
+    image: postgres
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kanban_board_user
+      POSTGRES_PASSWORD: kanban_board_password
+      POSTGRES_DB: kanban_board_db
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/pg:/data/postgres
