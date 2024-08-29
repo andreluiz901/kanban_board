@@ -1,7 +1,9 @@
 import { compare, hash } from 'bcrypt'
 import type { HashComparer } from './hash-comparer'
 import type { HashGenerator } from './hash-generator'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class BcryptHasher implements HashGenerator, HashComparer {
   private HASH_SALT_LENGTH = 8
 

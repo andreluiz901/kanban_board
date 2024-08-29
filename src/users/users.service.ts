@@ -1,20 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import type { PrismaUsersRepository } from 'src/db/prisma/repositories/prisma-users.repository';
-import type { HashGenerator } from 'src/cryptography/hash-generator';
-import type { User } from '@prisma/client';
-import { randomUUID } from 'crypto';
+import { User } from 'src/entities/users';
+import { UsersRepository } from 'src/db/repositories/users.repository';
+import { HashGenerator } from 'src/cryptography/hash-generator';
 
 @Injectable()
 export class UsersService {
 
   constructor(
-    private usersRepository: PrismaUsersRepository,
+    private usersRepository: UsersRepository,
     private hashGenerator: HashGenerator,
   ) { }
 
-  async create({ id, email, username, password }: CreateUserDto) {
+  async create({ email, username, password }: CreateUserDto) {
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
@@ -22,12 +21,11 @@ export class UsersService {
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    const user: User = {
-      id: randomUUID(),
-      email,
+    const user = User.create({
       username,
+      email,
       password: hashedPassword
-    }
+    })
 
     await this.usersRepository.create(user)
 
