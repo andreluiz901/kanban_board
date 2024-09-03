@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { HashGenerator } from "./hash-generator";
 import { BcryptHasher } from "./bcrypt-hasher";
-import { HashComparer } from "./hash-comparer";
+import { HashGenerator } from "src/application/cryptography/hash-generator";
+import { HashComparer } from "src/application/cryptography/hash-comparer";
 
 
 @Module({

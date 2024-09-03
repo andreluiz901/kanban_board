@@ -1,13 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UsePipes } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto, createUserSchema } from './schemas/create-user.schema';
-import { ZodValidationPipe } from 'src/core/pipes/zod-validation.pipe';
-import { UpdateUserDto, updateUserSchema } from './schemas/update-user.schema';
+import { UsersService } from '../../application/users/use-cases/users.service';
+import { CreateUserDto, createUserSchema } from '../../application/users/schemas/create-user.schema';
+import { UpdateUserDto, updateUserSchema } from '../../application/users/schemas/update-user.schema';
+import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe';
+import { Public } from 'src/application/auth/decorators/public';
+import { UserPayload } from 'src/infrastructure/auth/user-payload';
+import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @Public()
   @Post()
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async create(@Body() body: CreateUserDto) {
@@ -46,13 +50,18 @@ export class UsersController {
   @Patch(':id')
   async update(
     @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: UserPayload,
     @Param('id') id: string,
   ) {
-    return await this.usersService.update(id, updateUserDto);
+    return await this.usersService.update(id, updateUserDto, currentUser.id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+
+  remove(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: UserPayload
+  ) {
+    return this.usersService.remove(id, currentUser.id);
   }
 }

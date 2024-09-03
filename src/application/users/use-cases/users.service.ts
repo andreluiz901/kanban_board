@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from 'src/entities/users';
-import { UsersRepository } from 'src/db/repositories/users.repository';
-import { HashGenerator } from 'src/cryptography/hash-generator';
-import { UniqueEntityId } from 'src/entities/unique-entity-id';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from 'src/domain/entities/users';
+import { UsersRepository } from 'src/domain/repositories/users.repository';
+import { HashGenerator } from 'src/application/cryptography/hash-generator';
+import { UniqueEntityId } from 'src/domain/entities/unique-entity-id';
 
 @Injectable()
 export class UsersService {
@@ -50,13 +50,13 @@ export class UsersService {
     return user
   }
 
-  async update(id: string, data: UpdateUserDto) {
+  async update(id: string, data: UpdateUserDto, currentUserId: string) {
 
     const user = await this.usersRepository.findById(id)
 
     if (!user) throw new BadRequestException(`User not found`)
 
-    //TODO: when implements auth module with JWT, implements a verification to only owner update own profile
+    if (user.id.toValue() !== currentUserId) throw new ForbiddenException('Not Allowed!')
 
     const dataToUpdateUser = User.create({
       email: data.email ?? user.email,
@@ -69,13 +69,13 @@ export class UsersService {
     return userUpdated;
   }
 
-  async remove(id: string) {
+  async remove(id: string, currentUserId: string) {
 
     const user = await this.usersRepository.findById(id)
 
     if (!user) throw new BadRequestException(`User not found`)
 
-    //TODO: when implements auth module with JWT, implements a verification to only owner delete own profile
+    if (user.id.toValue() !== currentUserId) throw new ForbiddenException('Not Allowed!')
 
     return await this.usersRepository.delete(user)
   }

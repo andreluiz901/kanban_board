@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthService } from './use-cases/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { DatabaseModule } from 'src/db/database.module';
-import { CryptoGraphyModule } from 'src/cryptography/cryptography.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DatabaseModule } from 'src/infrastructure/database/database.module';
+import { CryptoGraphyModule } from 'src/infrastructure/cryptography/cryptography.module';
+import { AuthController } from 'src/interfaces/controllers/auth.controller';
 
 @Module({
   imports: [DatabaseModule, CryptoGraphyModule,

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { HashComparer } from 'src/cryptography/hash-comparer';
-import { UsersRepository } from 'src/db/repositories/users.repository';
+import { HashComparer } from 'src/application/cryptography/hash-comparer';
+import { UsersRepository } from 'src/domain/repositories/users.repository';
 
 @Injectable()
 export class AuthService {
