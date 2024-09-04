@@ -7,9 +7,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './interfaces/http/guards/auth-guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
+import { BoardsModule } from './application/board/boards.module';
 
 @Module({
-  imports: [UsersModule, AuthModule,
+  imports: [UsersModule, BoardsModule, AuthModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),

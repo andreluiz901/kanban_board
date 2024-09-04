@@ -14,46 +14,47 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   username String
-  email    String  @unique
+  email    String @unique
   password String
-  boardId  String?
 
-  Board Board? @relation(fields: [boardId], references: [id])
+  Boards Board[]
 
   @@map("users")
 }
 
 model Board {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
-  userId      User[]
-  collumnId   String?
+  userId      String @map("user_id")
 
-  Collumn Collumn? @relation(fields: [collumnId], references: [id])
+  User     User      @relation(fields: [userId], references: [id])
+  Collumns Collumn[]
 
   @@map("boards")
 }
 
 model Collumn {
-  id      String  @id @default(uuid())
+  id      String @id @default(uuid())
   name    String
-  boardId Board[]
-  cardId  String?
+  boardId String @map("board_id")
 
-  Card Card? @relation(fields: [cardId], references: [id])
+  Board Board  @relation(fields: [boardId], references: [id])
+  Cards Card[]
 
   @@map("collumns")
 }
 
 model Card {
-  id          String    @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   description String
   isComplete  Boolean
-  collumnId   Collumn[]
+  collumnId   String  @map("collum_id")
+
+  Collumn Collumn @relation(fields: [collumnId], references: [id])
 
   @@map("cards")
 }
