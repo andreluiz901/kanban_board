@@ -5,7 +5,6 @@ import { CreateBoardController } from 'src/interfaces/controllers/boards.control
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [CreateBoardController],
-  providers: [CreateBoardUseCase],
+  controllers: [CreateBoardController], providers: [CreateBoardUseCase],
 })
 export class BoardsModule { }
