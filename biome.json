@@ -9,6 +9,10 @@
     "lineWidth": 80
   },
   "javascript": {
+    "formatter": {
+      "semicolons": "asNeeded",
+      "quoteStyle": "single"
+    },
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
     }

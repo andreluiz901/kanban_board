@@ -7,6 +7,7 @@ interface CreateBoardUseCaseRequest {
   userId: string
   name: string
   description: string
+  currentUserId: string
 }
 
 type CreateBoardUseCaseResponse = null | {
