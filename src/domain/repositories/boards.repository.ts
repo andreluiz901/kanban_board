@@ -1,5 +1,7 @@
-import type { Board } from "src/domain/entities/board";
+import type { Board } from 'src/domain/entities/board'
 
 export abstract class BoardsRepository {
   abstract create(board: Board): Promise<void>
+  abstract findById(boardId: string): Promise<Board | null>
+  abstract delete(boardId: string): Promise<void>
 }
