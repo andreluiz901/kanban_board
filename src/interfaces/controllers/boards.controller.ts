@@ -1,18 +1,33 @@
-import { Controller, Post, Body, Delete, Param } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  Param,
+  Patch,
+  BadRequestException,
+} from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
 import { CreateBoardUseCase } from 'src/application/board/use-cases/create-board.usecase'
-import {
-  createBoardBodyValidationPipe,
-  CreateBoardBodySchema,
-} from './schemas/create-board-body-schema'
 import { RemoveBoardUseCase } from 'src/application/board/use-cases/delete-board.usecase'
+import { EditBoardUseCase } from 'src/application/board/use-cases/edit-board.usecase'
+import {
+  CreateBoardBodySchema,
+  createBoardBodyValidationPipe,
+} from './schemas/update-board-body-schema'
+import {
+  UpdateBoardBodySchema,
+  updateBoardBodyValidationPipe,
+} from './schemas/create-board-body-schema'
+import { BoardPresenter } from '../presenters/question-presenter'
 
 @Controller('boards')
 export class BoardController {
   constructor(
     private readonly createBoard: CreateBoardUseCase,
     private readonly removeBoard: RemoveBoardUseCase,
+    private readonly updateBoard: EditBoardUseCase,
   ) {}
 
   @Post()
@@ -28,6 +43,12 @@ export class BoardController {
       userId: user.id,
     })
 
+    if (!result) {
+      throw new BadRequestException(
+        'Sorry, its not possible to create board at this time, try again later.',
+      )
+    }
+
     return `Board ${name} created successfully`
   }
 
@@ -40,5 +61,28 @@ export class BoardController {
       boardId,
       currentUserId: currentUser.id,
     })
+  }
+
+  @Patch(':id')
+  async update(
+    @Body(updateBoardBodyValidationPipe) {
+      name,
+      description,
+    }: UpdateBoardBodySchema,
+    @CurrentUser() currentUser: UserPayload,
+    @Param('id') id: string,
+  ) {
+    const result = await this.updateBoard.execute({
+      boardId: id,
+      currentUserId: currentUser.id,
+      description,
+      name,
+    })
+
+    if (!result) {
+      throw new BadRequestException(
+        'Sorry, its not possible to update board at this time, try again later.',
+      )
+    }
   }
 }

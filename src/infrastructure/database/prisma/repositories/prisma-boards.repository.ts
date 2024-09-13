@@ -31,4 +31,16 @@ export class PrismaBoardRepository implements BoardsRepository {
       where: { id: boardId },
     })
   }
+
+  async update(board: Board): Promise<void> {
+    const data = PrismaBoardMapper.toPrisma(board)
+
+    await this.prisma.board.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        description: data.description,
+      },
+    })
+  }
 }
