@@ -37,6 +37,10 @@ export class CollumnController {
     @CurrentUser() currentUser: UserPayload,
     @Query('board_id') boardId: string,
   ) {
+    if (!boardId) {
+      throw new BadRequestException('Board Not Found!')
+    }
+
     const { name } = body
 
     const result = await this.createCollumn.execute({
