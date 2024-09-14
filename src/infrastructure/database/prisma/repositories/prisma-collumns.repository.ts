@@ -15,4 +15,20 @@ export class PrismaCollumnRepository implements CollumnsRepository {
       data,
     })
   }
+
+  async findById(collumnId: string): Promise<Collumn | null> {
+    const collumn = await this.prisma.collumn.findUnique({
+      where: { id: collumnId },
+    })
+
+    if (!collumn) return null
+
+    return await PrismaCollumnMapper.toDomain(collumn)
+  }
+
+  async delete(collumnId: string): Promise<void> {
+    await this.prisma.collumn.delete({
+      where: { id: collumnId },
+    })
+  }
 }

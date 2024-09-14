@@ -1,8 +1,8 @@
 import type { Collumn } from 'src/domain/entities/collumn'
 
 export abstract class CollumnsRepository {
-  abstract create(board: Collumn): Promise<void>
-  // abstract findById(boardId: string): Promise<Collumn | null>
-  // abstract delete(boardId: string): Promise<void>
-  // abstract update(board: Collumn): Promise<void>
+  abstract create(collumn: Collumn): Promise<void>
+  abstract findById(collumnId: string): Promise<Collumn | null>
+  abstract delete(collumnId: string): Promise<void>
+  // abstract update(collumn: Collumn): Promise<void>
 }

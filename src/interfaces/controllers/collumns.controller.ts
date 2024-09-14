@@ -26,10 +26,14 @@ import {
   CreateCollumnBodySchema,
   createCollumnBodyValidationPipe,
 } from './schemas/collumns/create-collumn-body-schema'
+import { RemoveCollumnUseCase } from 'src/application/collumns/use-cases/delete-collumn.usecase'
 
 @Controller('collumns')
 export class CollumnController {
-  constructor(private readonly createCollumn: CreateCollumnUseCase) {}
+  constructor(
+    private readonly createCollumn: CreateCollumnUseCase,
+    private readonly removeCollumn: RemoveCollumnUseCase,
+  ) {}
 
   @Post()
   async create(
@@ -56,5 +60,16 @@ export class CollumnController {
     }
 
     return `Collumn ${name} created successfully`
+  }
+
+  @Delete(':id')
+  async remove(
+    @Param('id') collumnId: string,
+    @CurrentUser() currentUser: UserPayload,
+  ) {
+    return this.removeCollumn.execute({
+      collumnId,
+      currentUserId: currentUser.id,
+    })
   }
 }
