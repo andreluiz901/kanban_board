@@ -6,6 +6,8 @@ import { BoardsRepository } from 'src/domain/repositories/boards.repository'
 import { PrismaBoardRepository } from './prisma/repositories/prisma-boards.repository'
 import { CollumnsRepository } from 'src/domain/repositories/collumns.repository'
 import { PrismaCollumnRepository } from './prisma/repositories/prisma-collumns.repository'
+import { CardsRepository } from 'src/domain/repositories/cards.repository'
+import { PrismaCardRepository } from './prisma/repositories/prisma-card.repository'
 
 @Module({
   imports: [],
@@ -23,12 +25,17 @@ import { PrismaCollumnRepository } from './prisma/repositories/prisma-collumns.r
       provide: CollumnsRepository,
       useClass: PrismaCollumnRepository,
     },
+    {
+      provide: CardsRepository,
+      useClass: PrismaCardRepository,
+    },
   ],
   exports: [
     PrismaService,
     UsersRepository,
     BoardsRepository,
     CollumnsRepository,
+    CardsRepository,
   ],
 })
 export class DatabaseModule {}

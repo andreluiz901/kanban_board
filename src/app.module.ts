@@ -9,12 +9,14 @@ import { AuthGuard } from './interfaces/http/guards/auth-guard'
 import { ConfigModule } from '@nestjs/config'
 import { BoardsModule } from './application/board/boards.module'
 import { CollumnsModule } from './application/collumns/collumns.module'
+import { CardsModule } from './application/card/cards.module'
 
 @Module({
   imports: [
     UsersModule,
     BoardsModule,
     CollumnsModule,
+    CardsModule,
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,

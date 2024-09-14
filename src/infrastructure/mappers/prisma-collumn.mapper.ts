@@ -13,11 +13,11 @@ export class PrismaCollumnMapper {
     )
   }
 
-  static toPrisma(board: Collumn): Prisma.CollumnUncheckedCreateInput {
+  static toPrisma(collumn: Collumn): Prisma.CollumnUncheckedCreateInput {
     return {
-      id: board.id.toValue(),
-      name: board.name,
-      boardId: board.boardId.toValue(),
+      id: collumn.id.toValue(),
+      name: collumn.name,
+      boardId: collumn.boardId.toValue(),
     }
   }
 }
