@@ -1,9 +1,11 @@
-import { Module } from "@nestjs/common";
-import { PrismaService } from "./prisma.service";
-import { UsersRepository } from "../../domain/repositories/users.repository";
-import { PrismaUsersRepository } from "./prisma/repositories/prisma-users.repository";
-import { BoardsRepository } from "src/domain/repositories/boards.repository";
-import { PrismaBoardRepository } from "./prisma/repositories/prisma-boards.repository";
+import { Module } from '@nestjs/common'
+import { PrismaService } from './prisma.service'
+import { UsersRepository } from '../../domain/repositories/users.repository'
+import { PrismaUsersRepository } from './prisma/repositories/prisma-users.repository'
+import { BoardsRepository } from 'src/domain/repositories/boards.repository'
+import { PrismaBoardRepository } from './prisma/repositories/prisma-boards.repository'
+import { CollumnsRepository } from 'src/domain/repositories/collumns.repository'
+import { PrismaCollumnRepository } from './prisma/repositories/prisma-collumns.repository'
 
 @Module({
   imports: [],
@@ -11,13 +13,22 @@ import { PrismaBoardRepository } from "./prisma/repositories/prisma-boards.repos
     PrismaService,
     {
       provide: UsersRepository,
-      useClass: PrismaUsersRepository
+      useClass: PrismaUsersRepository,
     },
     {
       provide: BoardsRepository,
-      useClass: PrismaBoardRepository
+      useClass: PrismaBoardRepository,
+    },
+    {
+      provide: CollumnsRepository,
+      useClass: PrismaCollumnRepository,
     },
   ],
-  exports: [PrismaService, UsersRepository, BoardsRepository]
+  exports: [
+    PrismaService,
+    UsersRepository,
+    BoardsRepository,
+    CollumnsRepository,
+  ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

@@ -15,12 +15,11 @@ import { EditBoardUseCase } from 'src/application/board/use-cases/edit-board.use
 import {
   CreateBoardBodySchema,
   createBoardBodyValidationPipe,
-} from './schemas/update-board-body-schema'
+} from './schemas/board/update-board-body-schema'
 import {
   UpdateBoardBodySchema,
   updateBoardBodyValidationPipe,
-} from './schemas/create-board-body-schema'
-import { BoardPresenter } from '../presenters/question-presenter'
+} from './schemas/board/create-board-body-schema'
 
 @Controller('boards')
 export class BoardController {
