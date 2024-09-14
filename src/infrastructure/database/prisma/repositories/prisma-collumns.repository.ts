@@ -31,4 +31,15 @@ export class PrismaCollumnRepository implements CollumnsRepository {
       where: { id: collumnId },
     })
   }
+
+  async update(collumn: Collumn): Promise<void> {
+    const data = PrismaCollumnMapper.toPrisma(collumn)
+
+    await this.prisma.collumn.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+      },
+    })
+  }
 }

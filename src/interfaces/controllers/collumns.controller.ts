@@ -27,12 +27,15 @@ import {
   createCollumnBodyValidationPipe,
 } from './schemas/collumns/create-collumn-body-schema'
 import { RemoveCollumnUseCase } from 'src/application/collumns/use-cases/delete-collumn.usecase'
+import { EditCollumnUseCase } from 'src/application/collumns/use-cases/edit-collumn.usecase'
+import { updateCollumnBodyValidationPipe } from './schemas/collumns/update-collumn-body-schema'
 
 @Controller('collumns')
 export class CollumnController {
   constructor(
     private readonly createCollumn: CreateCollumnUseCase,
     private readonly removeCollumn: RemoveCollumnUseCase,
+    private readonly updateCollumn: EditCollumnUseCase,
   ) {}
 
   @Post()
@@ -71,5 +74,24 @@ export class CollumnController {
       collumnId,
       currentUserId: currentUser.id,
     })
+  }
+
+  @Patch(':id')
+  async update(
+    @Body(updateCollumnBodyValidationPipe) { name }: UpdateBoardBodySchema,
+    @CurrentUser() currentUser: UserPayload,
+    @Param('id') collumnId: string,
+  ) {
+    const result = await this.updateCollumn.execute({
+      name,
+      collumnId,
+      currentUserId: currentUser.id,
+    })
+
+    if (!result) {
+      throw new BadRequestException(
+        'Sorry, its not possible to update collumn at this time, try again later.',
+      )
+    }
   }
 }
