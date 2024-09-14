@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   Query,
 } from '@nestjs/common'
@@ -12,10 +14,14 @@ import {
   createCardBodyValidationPipe,
 } from './schemas/card/create-card-body-schema'
 import { CreateCardUseCase } from 'src/application/card/use-cases/create-card.usecase'
+import { RemoveCardUseCase } from 'src/application/card/use-cases/delete-card.usecase'
 
 @Controller('cards')
 export class CardsController {
-  constructor(private readonly createCard: CreateCardUseCase) {}
+  constructor(
+    private readonly createCard: CreateCardUseCase,
+    private readonly removeCard: RemoveCardUseCase,
+  ) {}
 
   @Post()
   async create(
@@ -44,5 +50,16 @@ export class CardsController {
     }
 
     return `Card ${name} created successfully`
+  }
+
+  @Delete(':id')
+  async remove(
+    @Param('id') cardId: string,
+    @CurrentUser() currentUser: UserPayload,
+  ) {
+    return this.removeCard.execute({
+      cardId,
+      currentUserId: currentUser.id,
+    })
   }
 }

@@ -18,4 +18,20 @@ export class PrismaCardRepository implements CardsRepository {
       data,
     })
   }
+
+  async findById(cardId: string): Promise<Card | null> {
+    const card = await this.prisma.card.findUnique({
+      where: { id: cardId },
+    })
+
+    if (!card) return null
+
+    return await PrismaCardMapper.toDomain(card)
+  }
+
+  async delete(cardId: string): Promise<void> {
+    await this.prisma.card.delete({
+      where: { id: cardId },
+    })
+  }
 }
