@@ -28,7 +28,10 @@ import {
 } from './schemas/collumns/create-collumn-body-schema'
 import { RemoveCollumnUseCase } from 'src/application/collumns/use-cases/delete-collumn.usecase'
 import { EditCollumnUseCase } from 'src/application/collumns/use-cases/edit-collumn.usecase'
-import { updateCollumnBodyValidationPipe } from './schemas/collumns/update-collumn-body-schema'
+import {
+  UpdateCollumnBodySchema,
+  updateCollumnBodyValidationPipe,
+} from './schemas/collumns/update-collumn-body-schema'
 
 @Controller('collumns')
 export class CollumnController {
@@ -78,7 +81,7 @@ export class CollumnController {
 
   @Patch(':id')
   async update(
-    @Body(updateCollumnBodyValidationPipe) { name }: UpdateBoardBodySchema,
+    @Body(updateCollumnBodyValidationPipe) { name }: UpdateCollumnBodySchema,
     @CurrentUser() currentUser: UserPayload,
     @Param('id') collumnId: string,
   ) {

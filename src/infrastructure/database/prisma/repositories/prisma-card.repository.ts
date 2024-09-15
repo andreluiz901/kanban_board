@@ -34,4 +34,16 @@ export class PrismaCardRepository implements CardsRepository {
       where: { id: cardId },
     })
   }
+
+  async update(card: Card): Promise<void> {
+    const data = PrismaCardMapper.toPrisma(card)
+
+    await this.prisma.card.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        description: data.description,
+      },
+    })
+  }
 }

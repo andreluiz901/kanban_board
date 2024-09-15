@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common'
@@ -15,12 +16,16 @@ import {
 } from './schemas/card/create-card-body-schema'
 import { CreateCardUseCase } from 'src/application/card/use-cases/create-card.usecase'
 import { RemoveCardUseCase } from 'src/application/card/use-cases/delete-card.usecase'
+import { EditCardUseCase } from 'src/application/card/use-cases/edit-card.usecase'
+import { UpdateBoardBodySchema } from './schemas/board/create-board-body-schema'
+import { updateCardBodyValidationPipe } from './schemas/card/update-card-body-schema'
 
 @Controller('cards')
 export class CardsController {
   constructor(
     private readonly createCard: CreateCardUseCase,
     private readonly removeCard: RemoveCardUseCase,
+    private readonly updateCard: EditCardUseCase,
   ) {}
 
   @Post()
@@ -61,5 +66,28 @@ export class CardsController {
       cardId,
       currentUserId: currentUser.id,
     })
+  }
+
+  @Patch(':id')
+  async update(
+    @Body(updateCardBodyValidationPipe) {
+      name,
+      description,
+    }: UpdateBoardBodySchema,
+    @CurrentUser() currentUser: UserPayload,
+    @Param('id') cardId: string,
+  ) {
+    const result = await this.updateCard.execute({
+      name,
+      description,
+      cardId,
+      currentUserId: currentUser.id,
+    })
+
+    if (!result) {
+      throw new BadRequestException(
+        'Sorry, its not possible to update collumn at this time, try again later.',
+      )
+    }
   }
 }
