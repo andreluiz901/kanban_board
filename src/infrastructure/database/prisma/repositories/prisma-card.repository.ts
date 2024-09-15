@@ -46,4 +46,17 @@ export class PrismaCardRepository implements CardsRepository {
       },
     })
   }
+
+  async toogleComplete(cardId: string): Promise<Card> {
+    const card = await this.findById(cardId)
+
+    const cardUpdated = await this.prisma.card.update({
+      where: { id: cardId },
+      data: {
+        isComplete: !card.isComplete,
+      },
+    })
+
+    return PrismaCardMapper.toDomain(cardUpdated)
+  }
 }

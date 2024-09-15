@@ -19,6 +19,7 @@ import { RemoveCardUseCase } from 'src/application/card/use-cases/delete-card.us
 import { EditCardUseCase } from 'src/application/card/use-cases/edit-card.usecase'
 import { UpdateBoardBodySchema } from './schemas/board/create-board-body-schema'
 import { updateCardBodyValidationPipe } from './schemas/card/update-card-body-schema'
+import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
 
 @Controller('cards')
 export class CardsController {
@@ -26,6 +27,7 @@ export class CardsController {
     private readonly createCard: CreateCardUseCase,
     private readonly removeCard: RemoveCardUseCase,
     private readonly updateCard: EditCardUseCase,
+    private readonly toogleCardComplete: ToogleCardCompleteUseCase,
   ) {}
 
   @Post()
@@ -80,6 +82,23 @@ export class CardsController {
     const result = await this.updateCard.execute({
       name,
       description,
+      cardId,
+      currentUserId: currentUser.id,
+    })
+
+    if (!result) {
+      throw new BadRequestException(
+        'Sorry, its not possible to update collumn at this time, try again later.',
+      )
+    }
+  }
+
+  @Patch('complete/:id')
+  async toogleComplete(
+    @CurrentUser() currentUser: UserPayload,
+    @Param('id') cardId: string,
+  ) {
+    const result = await this.toogleCardComplete.execute({
       cardId,
       currentUserId: currentUser.id,
     })
