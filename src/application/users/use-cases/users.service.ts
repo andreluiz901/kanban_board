@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { UpdateUserDto } from '../dto/update-user.dto'
-import { User } from 'src/domain/entities/users'
+import { User } from 'src/domain/entities/user'
 import { UsersRepository } from 'src/domain/repositories/users.repository'
 import { HashGenerator } from 'src/application/cryptography/hash-generator'
 import { UniqueEntityId } from 'src/domain/entities/unique-entity-id'

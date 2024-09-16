@@ -39,7 +39,7 @@ export class UsersController {
       password,
     })
 
-    return `User ${username} created successfully`
+    return { data: result }
   }
 
   @Get()

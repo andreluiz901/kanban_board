@@ -6,4 +6,5 @@ export abstract class CardsRepository {
   abstract delete(cardId: string): Promise<void>
   abstract update(card: Card): Promise<void>
   abstract toogleComplete(cardId: string): Promise<Card>
+  abstract findLastCardByCollumnId(collumnId: string): Promise<Card | null>
 }

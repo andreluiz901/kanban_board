@@ -1,6 +1,5 @@
 import { Prisma, Card as PrismaCard } from '@prisma/client'
 import { Card } from 'src/domain/entities/card'
-import { Collumn } from 'src/domain/entities/collumn'
 import { UniqueEntityId } from 'src/domain/entities/unique-entity-id'
 
 export class PrismaCardMapper {
@@ -11,6 +10,7 @@ export class PrismaCardMapper {
         collumnId: new UniqueEntityId(raw.collumnId),
         description: raw.description,
         isComplete: raw.isComplete,
+        order: raw.order,
       },
       new UniqueEntityId(raw.id),
     )
@@ -23,6 +23,7 @@ export class PrismaCardMapper {
       collumnId: card.collumnId.toValue(),
       description: card.description,
       isComplete: card.isComplete,
+      order: card.order,
     }
   }
 }

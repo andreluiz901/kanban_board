@@ -59,4 +59,13 @@ export class PrismaCardRepository implements CardsRepository {
 
     return PrismaCardMapper.toDomain(cardUpdated)
   }
+
+  async findLastCardByCollumnId(collumnId: string): Promise<Card | null> {
+    const lastCollumn = await this.prisma.card.findFirst({
+      where: { collumnId },
+      orderBy: { order: 'desc' },
+    })
+
+    return await PrismaCardMapper.toDomain(lastCollumn)
+  }
 }

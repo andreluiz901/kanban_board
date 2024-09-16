@@ -52,6 +52,7 @@ export class EditCollumnUseCase {
       {
         name,
         boardId: new UniqueEntityId(board.id.toValue()),
+        order: collumn.order,
       },
       new UniqueEntityId(collumnId),
     )

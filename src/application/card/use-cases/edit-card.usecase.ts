@@ -62,6 +62,7 @@ export class EditCardUseCase {
         collumnId: new UniqueEntityId(collumn.id.toValue()),
         description: description ?? card.description,
         isComplete: card.isComplete,
+        order: card.order,
       },
       new UniqueEntityId(cardId),
     )

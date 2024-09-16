@@ -1,9 +1,13 @@
+import { Optional } from '../types/optional'
 import { Entity } from './entity'
 import type { UniqueEntityId } from './unique-entity-id'
 
 export interface CollumnProps {
   name: string
   boardId: UniqueEntityId
+  order: number
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class Collumn extends Entity<CollumnProps> {
@@ -15,9 +19,30 @@ export class Collumn extends Entity<CollumnProps> {
     return this.props.boardId
   }
 
-  static create(props: CollumnProps, id?: UniqueEntityId) {
-    const user = new Collumn(props, id)
+  get order() {
+    return this.props.order
+  }
 
-    return user
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  static create(
+    props: Optional<CollumnProps, 'createdAt'>,
+    id?: UniqueEntityId,
+  ) {
+    const collumn = new Collumn(
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+      },
+      id,
+    )
+
+    return collumn
   }
 }

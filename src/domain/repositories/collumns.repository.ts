@@ -5,4 +5,5 @@ export abstract class CollumnsRepository {
   abstract findById(collumnId: string): Promise<Collumn | null>
   abstract delete(collumnId: string): Promise<void>
   abstract update(collumn: Collumn): Promise<void>
+  abstract findLastCollumnByBoardId(boardId: string): Promise<Collumn | null>
 }

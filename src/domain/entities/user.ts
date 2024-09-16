@@ -2,25 +2,25 @@ import { Optional } from '../types/optional'
 import { Entity } from './entity'
 import type { UniqueEntityId } from './unique-entity-id'
 
-export interface BoardProps {
-  name: string
-  description: string
-  userId: UniqueEntityId
+export interface UserProps {
+  username: string
+  email: string
+  password: string
   createdAt: Date
   updatedAt?: Date | null
 }
 
-export class Board extends Entity<BoardProps> {
-  get name() {
-    return this.props.name
+export class User extends Entity<UserProps> {
+  get username() {
+    return this.props.username
   }
 
-  get description() {
-    return this.props.description
+  get email() {
+    return this.props.email
   }
 
-  get userId() {
-    return this.props.userId
+  get password() {
+    return this.props.password
   }
 
   get createdAt() {
@@ -31,8 +31,8 @@ export class Board extends Entity<BoardProps> {
     return this.props.updatedAt
   }
 
-  static create(props: Optional<BoardProps, 'createdAt'>, id?: UniqueEntityId) {
-    const user = new Board(
+  static create(props: Optional<UserProps, 'createdAt'>, id?: UniqueEntityId) {
+    const user = new User(
       { ...props, createdAt: props.createdAt ?? new Date() },
       id,
     )

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { User } from 'src/domain/entities/users'
+import { User } from 'src/domain/entities/user'
 import { UniqueEntityId } from 'src/domain/entities/unique-entity-id'
 import { UsersRepository } from 'src/domain/repositories/users.repository'
 import { PrismaService } from '../../prisma.service'
+import { PrismaUserMapper } from 'src/infrastructure/mappers/prisma-user.mapper'
 
 @Injectable()
 export class PrismaUsersRepository implements UsersRepository {
@@ -21,29 +22,19 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async create(user: User): Promise<void> {
+    const data = await PrismaUserMapper.toPrisma(user)
+
     await this.prisma.user.create({
-      data: {
-        id: user.id.toValue(),
-        email: user.email,
-        password: user.password,
-        username: user.username,
-      },
+      data,
     })
   }
 
   async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany()
+    const users = await this.prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+    })
 
-    return users.map((user) =>
-      User.create(
-        {
-          email: user.email,
-          username: user.username,
-          password: user.password,
-        },
-        new UniqueEntityId(user.id),
-      ),
-    )
+    return users.map(PrismaUserMapper.toDomain)
   }
 
   async findById(id: string): Promise<User | null> {
@@ -53,18 +44,15 @@ export class PrismaUsersRepository implements UsersRepository {
 
     if (!user) return null
 
-    return User.create(user, new UniqueEntityId(user.id))
+    return PrismaUserMapper.toDomain(user)
   }
 
   async update(user: User): Promise<void> {
+    const data = await PrismaUserMapper.toPrisma(user)
+
     await this.prisma.user.update({
-      where: { id: user.id.toValue() },
-      data: {
-        id: user.id.toValue(),
-        email: user.email,
-        password: user.password,
-        username: user.username,
-      },
+      where: { id: data.id },
+      data,
     })
   }
 

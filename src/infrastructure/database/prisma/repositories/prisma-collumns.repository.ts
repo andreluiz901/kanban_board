@@ -42,4 +42,13 @@ export class PrismaCollumnRepository implements CollumnsRepository {
       },
     })
   }
+
+  async findLastCollumnByBoardId(boardId: string): Promise<Collumn | null> {
+    const lastCollumn = await this.prisma.collumn.findFirst({
+      where: { boardId },
+      orderBy: { order: 'desc' },
+    })
+
+    return await PrismaCollumnMapper.toDomain(lastCollumn)
+  }
 }

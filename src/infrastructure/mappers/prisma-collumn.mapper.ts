@@ -8,6 +8,7 @@ export class PrismaCollumnMapper {
       {
         name: raw.name,
         boardId: new UniqueEntityId(raw.boardId),
+        order: raw.order,
       },
       new UniqueEntityId(raw.id),
     )
@@ -18,6 +19,7 @@ export class PrismaCollumnMapper {
       id: collumn.id.toValue(),
       name: collumn.name,
       boardId: collumn.boardId.toValue(),
+      order: collumn.order,
     }
   }
 }

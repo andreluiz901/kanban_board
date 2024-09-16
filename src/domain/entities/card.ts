@@ -1,3 +1,4 @@
+import { Optional } from '../types/optional'
 import { Entity } from './entity'
 import type { UniqueEntityId } from './unique-entity-id'
 
@@ -5,7 +6,10 @@ export interface CardProps {
   name: string
   description: string
   isComplete: boolean
+  order: number
   collumnId: UniqueEntityId
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class Card extends Entity<CardProps> {
@@ -25,8 +29,23 @@ export class Card extends Entity<CardProps> {
     return this.props.collumnId
   }
 
-  static create(props: CardProps, id?: UniqueEntityId) {
-    const user = new Card(props, id)
+  get order() {
+    return this.props.order
+  }
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  static create(props: Optional<CardProps, 'createdAt'>, id?: UniqueEntityId) {
+    const user = new Card(
+      { ...props, createdAt: props.createdAt ?? new Date() },
+      id,
+    )
 
     return user
   }
