@@ -2,8 +2,8 @@ import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe
 import { z } from 'zod'
 
 const createCardBodySchema = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: z.string().min(1, 'Please inform a name of the Card'),
+  description: z.string().optional(),
 })
 
 export const createCardBodyValidationPipe = new ZodValidationPipe(

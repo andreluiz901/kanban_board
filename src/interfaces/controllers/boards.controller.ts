@@ -12,14 +12,15 @@ import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.dec
 import { CreateBoardUseCase } from 'src/application/board/use-cases/create-board.usecase'
 import { RemoveBoardUseCase } from 'src/application/board/use-cases/delete-board.usecase'
 import { EditBoardUseCase } from 'src/application/board/use-cases/edit-board.usecase'
+import { BoardPresenter } from '../presenters/board-presenter'
 import {
   CreateBoardBodySchema,
   createBoardBodyValidationPipe,
-} from './schemas/board/update-board-body-schema'
+} from './schemas/board/create-board-body-schema'
 import {
   UpdateBoardBodySchema,
   updateBoardBodyValidationPipe,
-} from './schemas/board/create-board-body-schema'
+} from './schemas/board/update-board-body-schema'
 
 @Controller('boards')
 export class BoardController {
@@ -48,7 +49,7 @@ export class BoardController {
       )
     }
 
-    return `Board ${name} created successfully`
+    return { board: BoardPresenter.toHTTP(result.board) }
   }
 
   @Delete(':id')

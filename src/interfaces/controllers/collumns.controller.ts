@@ -10,17 +10,6 @@ import {
 } from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
-import { CreateBoardUseCase } from 'src/application/board/use-cases/create-board.usecase'
-import { RemoveBoardUseCase } from 'src/application/board/use-cases/delete-board.usecase'
-import { EditBoardUseCase } from 'src/application/board/use-cases/edit-board.usecase'
-import {
-  CreateBoardBodySchema,
-  createBoardBodyValidationPipe,
-} from './schemas/board/update-board-body-schema'
-import {
-  UpdateBoardBodySchema,
-  updateBoardBodyValidationPipe,
-} from './schemas/board/create-board-body-schema'
 import { CreateCollumnUseCase } from 'src/application/collumns/use-cases/create-collumn.usecase'
 import {
   CreateCollumnBodySchema,

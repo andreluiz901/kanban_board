@@ -1,13 +1,13 @@
 import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe'
 import { z } from 'zod'
 
-const updateBoardBodySchema = z.object({
-  name: z.string(),
-  description: z.string(),
+const createBoardBodySchema = z.object({
+  name: z.string().min(1, 'Please inform a name of the Board'),
+  description: z.string().optional(),
 })
 
-export const updateBoardBodyValidationPipe = new ZodValidationPipe(
-  updateBoardBodySchema,
+export const createBoardBodyValidationPipe = new ZodValidationPipe(
+  createBoardBodySchema,
 )
 
-export type UpdateBoardBodySchema = z.infer<typeof updateBoardBodySchema>
+export type CreateBoardBodySchema = z.infer<typeof createBoardBodySchema>

@@ -17,8 +17,10 @@ import {
 import { CreateCardUseCase } from 'src/application/card/use-cases/create-card.usecase'
 import { RemoveCardUseCase } from 'src/application/card/use-cases/delete-card.usecase'
 import { EditCardUseCase } from 'src/application/card/use-cases/edit-card.usecase'
-import { UpdateBoardBodySchema } from './schemas/board/create-board-body-schema'
-import { updateCardBodyValidationPipe } from './schemas/card/update-card-body-schema'
+import {
+  UpdateCardBodySchema,
+  updateCardBodyValidationPipe,
+} from './schemas/card/update-card-body-schema'
 import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
 
 @Controller('cards')
@@ -75,7 +77,7 @@ export class CardsController {
     @Body(updateCardBodyValidationPipe) {
       name,
       description,
-    }: UpdateBoardBodySchema,
+    }: UpdateCardBodySchema,
     @CurrentUser() currentUser: UserPayload,
     @Param('id') cardId: string,
   ) {
