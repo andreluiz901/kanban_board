@@ -18,6 +18,8 @@ model User {
   username String
   email    String @unique
   password String
+  createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
+  updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
   Boards Board[]
 
@@ -29,6 +31,8 @@ model Board {
   name        String
   description String
   userId      String @map("user_id")
+  createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
+  updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
   User     User      @relation(fields: [userId], references: [id])
   Collumns Collumn[]
@@ -40,6 +44,9 @@ model Collumn {
   id      String @id @default(uuid())
   name    String
   boardId String @map("board_id")
+  order Int
+  createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
+  updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
   Board Board  @relation(fields: [boardId], references: [id])
   Cards Card[]
@@ -52,6 +59,9 @@ model Card {
   name        String
   description String
   isComplete  Boolean
+  order Int
+  createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
+  updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
   collumnId   String  @map("collum_id")
 
   Collumn Collumn @relation(fields: [collumnId], references: [id])
