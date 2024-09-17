@@ -21,6 +21,7 @@ import {
   UpdateCollumnBodySchema,
   updateCollumnBodyValidationPipe,
 } from './schemas/collumns/update-collumn-body-schema'
+import { CollumnPresenter } from '../presenters/collumn-presenter'
 
 @Controller('collumns')
 export class CollumnController {
@@ -32,15 +33,13 @@ export class CollumnController {
 
   @Post()
   async create(
-    @Body(createCollumnBodyValidationPipe) body: CreateCollumnBodySchema,
+    @Body(createCollumnBodyValidationPipe) { name }: CreateCollumnBodySchema,
     @CurrentUser() currentUser: UserPayload,
     @Query('board_id') boardId: string,
   ) {
     if (!boardId) {
       throw new BadRequestException('Board Not Found!')
     }
-
-    const { name } = body
 
     const result = await this.createCollumn.execute({
       name,
@@ -54,7 +53,7 @@ export class CollumnController {
       )
     }
 
-    return `Collumn ${name} created successfully`
+    return { collumn: CollumnPresenter.toHTTP(result.collumn) }
   }
 
   @Delete(':id')

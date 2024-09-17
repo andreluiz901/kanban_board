@@ -18,7 +18,8 @@ type EditBoardUseCaseResponse =
   | {
       board: Board
     }
-  | Error
+  | BadRequestException
+  | ForbiddenException
 
 @Injectable()
 export class EditBoardUseCase {

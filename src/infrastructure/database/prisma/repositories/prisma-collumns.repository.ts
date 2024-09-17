@@ -49,6 +49,10 @@ export class PrismaCollumnRepository implements CollumnsRepository {
       orderBy: { order: 'desc' },
     })
 
+    if (!lastCollumn) {
+      return null
+    }
+
     return await PrismaCollumnMapper.toDomain(lastCollumn)
   }
 }

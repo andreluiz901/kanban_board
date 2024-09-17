@@ -49,7 +49,7 @@ export class CreateCollumnUseCase {
     const collumn = Collumn.create({
       name,
       boardId: new UniqueEntityId(boardId),
-      order: lastCollumn.order ? lastCollumn.order + 1 : 0,
+      order: lastCollumn ? lastCollumn.order + 1 : 0,
     })
 
     await this.collumnRepository.create(collumn)
