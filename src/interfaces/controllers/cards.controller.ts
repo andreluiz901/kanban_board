@@ -22,6 +22,7 @@ import {
   updateCardBodyValidationPipe,
 } from './schemas/card/update-card-body-schema'
 import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
+import { CardPresenter } from '../presenters/card-presenter'
 
 @Controller('cards')
 export class CardsController {
@@ -58,7 +59,7 @@ export class CardsController {
       )
     }
 
-    return `Card ${name} created successfully`
+    return { card: CardPresenter.toHTTP(result.card) }
   }
 
   @Delete(':id')

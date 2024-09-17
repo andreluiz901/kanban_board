@@ -66,6 +66,10 @@ export class PrismaCardRepository implements CardsRepository {
       orderBy: { order: 'desc' },
     })
 
+    if (!lastCollumn) {
+      return null
+    }
+
     return await PrismaCardMapper.toDomain(lastCollumn)
   }
 }

@@ -49,7 +49,7 @@ export class CreateCardUseCase {
     }
 
     const lastCard = await this.cardRepository.findLastCardByCollumnId(
-      board.id.toValue(),
+      collumn.id.toValue(),
     )
 
     const card = Card.create({
@@ -57,7 +57,7 @@ export class CreateCardUseCase {
       description,
       isComplete: false,
       collumnId: new UniqueEntityId(collumnId),
-      order: lastCard.order ? lastCard.order + 1 : 0,
+      order: lastCard ? lastCard.order + 1 : 0,
     })
 
     await this.cardRepository.create(card)
