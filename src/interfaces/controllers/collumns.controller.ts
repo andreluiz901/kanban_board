@@ -7,6 +7,8 @@ import {
   Patch,
   BadRequestException,
   Query,
+  ValidationPipe,
+  HttpCode,
 } from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -22,7 +24,16 @@ import {
   updateCollumnBodyValidationPipe,
 } from './schemas/collumns/update-collumn-body-schema'
 import { CollumnPresenter } from '../presenters/collumn-presenter'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import { CreateCollumnResponse201 } from './dtos/collumn/create-collumn-response-201.dto'
+import { CreateCollumndDTO } from './dtos/collumn/create-collumn.dto'
+import { UpdateCollumnResponse200 } from './dtos/collumn/update-collumn-response-200.dto'
+import { UpdateCollumnDTO } from './dtos/collumn/update-collumn.dto'
 
 @ApiBearerAuth()
 @ApiTags('Collumns')
@@ -35,8 +46,14 @@ export class CollumnController {
   ) {}
 
   @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'Collumn successfully created',
+    type: CreateCollumnResponse201,
+  })
+  @ApiOperation({ summary: 'User create a new collumn on his own board' })
   async create(
-    @Body(createCollumnBodyValidationPipe) { name }: CreateCollumnBodySchema,
+    @Body(new ValidationPipe()) { name }: CreateCollumndDTO,
     @CurrentUser() currentUser: UserPayload,
     @Query('board_id') boardId: string,
   ) {
@@ -60,6 +77,8 @@ export class CollumnController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'User delete a collumn' })
   async remove(
     @Param('id') collumnId: string,
     @CurrentUser() currentUser: UserPayload,
@@ -71,8 +90,14 @@ export class CollumnController {
   }
 
   @Patch(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Collumn successfully updated',
+    type: UpdateCollumnResponse200,
+  })
+  @ApiOperation({ summary: 'User update his own collumn name' })
   async update(
-    @Body(updateCollumnBodyValidationPipe) { name }: UpdateCollumnBodySchema,
+    @Body(new ValidationPipe()) { name }: UpdateCollumnDTO,
     @CurrentUser() currentUser: UserPayload,
     @Param('id') collumnId: string,
   ) {
