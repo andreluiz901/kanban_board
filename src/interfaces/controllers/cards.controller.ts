@@ -3,10 +3,12 @@ import {
   Body,
   Controller,
   Delete,
+  HttpCode,
   Param,
   Patch,
   Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
@@ -23,7 +25,15 @@ import {
 } from './schemas/card/update-card-body-schema'
 import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
 import { CardPresenter } from '../presenters/card-presenter'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import { CreateCardResponse201 } from './dtos/card/create-card-response-201.dto'
+import { CreateCardDTO } from './dtos/card/create-card.dto'
+import { UpdateCardResponse200 } from './dtos/card/update-card-response-200.dto'
 
 @ApiBearerAuth()
 @ApiTags('Cards')
@@ -37,11 +47,14 @@ export class CardsController {
   ) {}
 
   @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'Card successfully created',
+    type: CreateCardResponse201,
+  })
+  @ApiOperation({ summary: 'User create a new card on his own board' })
   async create(
-    @Body(createCardBodyValidationPipe) {
-      name,
-      description,
-    }: CreateCardBodySchema,
+    @Body(new ValidationPipe()) { name, description }: CreateCardDTO,
     @CurrentUser() currentUser: UserPayload,
     @Query('collumn_id') collumnId: string,
   ) {
@@ -66,6 +79,8 @@ export class CardsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'User delete a card' })
   async remove(
     @Param('id') cardId: string,
     @CurrentUser() currentUser: UserPayload,
@@ -77,6 +92,12 @@ export class CardsController {
   }
 
   @Patch(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Card successfully updated',
+    type: UpdateCardResponse200,
+  })
+  @ApiOperation({ summary: 'User update his own card name or description' })
   async update(
     @Body(updateCardBodyValidationPipe) {
       name,
@@ -100,6 +121,10 @@ export class CardsController {
   }
 
   @Patch('complete/:id')
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'User toogle his own card as completed or not completed',
+  })
   async toogleComplete(
     @CurrentUser() currentUser: UserPayload,
     @Param('id') cardId: string,

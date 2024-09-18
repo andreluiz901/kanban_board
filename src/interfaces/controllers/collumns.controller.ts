@@ -13,16 +13,8 @@ import {
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
 import { CreateCollumnUseCase } from 'src/application/collumns/use-cases/create-collumn.usecase'
-import {
-  CreateCollumnBodySchema,
-  createCollumnBodyValidationPipe,
-} from './schemas/collumns/create-collumn-body-schema'
 import { RemoveCollumnUseCase } from 'src/application/collumns/use-cases/delete-collumn.usecase'
 import { EditCollumnUseCase } from 'src/application/collumns/use-cases/edit-collumn.usecase'
-import {
-  UpdateCollumnBodySchema,
-  updateCollumnBodyValidationPipe,
-} from './schemas/collumns/update-collumn-body-schema'
 import { CollumnPresenter } from '../presenters/collumn-presenter'
 import {
   ApiBearerAuth,

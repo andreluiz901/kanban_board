@@ -5,6 +5,7 @@ export class UpdateCollumnResponse200 {
   collumn: {
     id: string
     name: string
+    order: number
     board_id: string
   }
 }
