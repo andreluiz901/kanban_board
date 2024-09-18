@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   BadRequestException,
+  ValidationPipe,
 } from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -21,7 +22,10 @@ import {
   UpdateBoardBodySchema,
   updateBoardBodyValidationPipe,
 } from './schemas/board/update-board-body-schema'
+import { CreateBoardDTO } from './dtos/create-board.dto'
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 
+@ApiBearerAuth()
 @Controller('boards')
 export class BoardController {
   constructor(
@@ -31,8 +35,10 @@ export class BoardController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'User create a new board' })
   async create(
-    @Body(createBoardBodyValidationPipe) body: CreateBoardBodySchema,
+    //@Body(createBoardBodyValidationPipe) body: CreateBoardBodySchema,
+    @Body(new ValidationPipe()) body: CreateBoardDTO,
     @CurrentUser() user: UserPayload,
   ) {
     const { name, description } = body

@@ -23,7 +23,9 @@ import {
 } from './schemas/card/update-card-body-schema'
 import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
 import { CardPresenter } from '../presenters/card-presenter'
+import { ApiBearerAuth } from '@nestjs/swagger'
 
+@ApiBearerAuth()
 @Controller('cards')
 export class CardsController {
   constructor(

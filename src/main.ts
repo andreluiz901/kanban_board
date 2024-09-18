@@ -9,6 +9,7 @@ async function bootstrap() {
   app.use(helmet())
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Kanban_Board')
     .setDescription('Use this doc to test Kanban_Board backend api routes')
     .setVersion('0.1')
@@ -17,9 +18,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
 
-  SwaggerModule.setup('api', app, document, {
-    jsonDocumentUrl: 'api/json',
-  })
+  SwaggerModule.setup('api', app, document)
 
   const configService = app.get(ConfigService)
 
