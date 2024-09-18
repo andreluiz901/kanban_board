@@ -7,6 +7,7 @@ import {
   Patch,
   BadRequestException,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -14,18 +15,19 @@ import { CreateBoardUseCase } from 'src/application/board/use-cases/create-board
 import { RemoveBoardUseCase } from 'src/application/board/use-cases/delete-board.usecase'
 import { EditBoardUseCase } from 'src/application/board/use-cases/edit-board.usecase'
 import { BoardPresenter } from '../presenters/board-presenter'
+import { CreateBoardDTO } from './dtos/board/create-board.dto'
 import {
-  CreateBoardBodySchema,
-  createBoardBodyValidationPipe,
-} from './schemas/board/create-board-body-schema'
-import {
-  UpdateBoardBodySchema,
-  updateBoardBodyValidationPipe,
-} from './schemas/board/update-board-body-schema'
-import { CreateBoardDTO } from './dtos/create-board.dto'
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import { UpdateBoardDTO } from './dtos/board/update-board.dto'
+import { CreateBoardResponse201 } from './dtos/board/create-board-response-201.dto'
+import { UpdateBoardResponse200 } from './dtos/board/create-board-response-200.dto'
 
 @ApiBearerAuth()
+@ApiTags('Boards')
 @Controller('boards')
 export class BoardController {
   constructor(
@@ -35,9 +37,13 @@ export class BoardController {
   ) {}
 
   @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'Board successfully created',
+    type: CreateBoardResponse201,
+  })
   @ApiOperation({ summary: 'User create a new board' })
   async create(
-    //@Body(createBoardBodyValidationPipe) body: CreateBoardBodySchema,
     @Body(new ValidationPipe()) body: CreateBoardDTO,
     @CurrentUser() user: UserPayload,
   ) {
@@ -59,6 +65,8 @@ export class BoardController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'User delete a board' })
   async remove(
     @Param('id') boardId: string,
     @CurrentUser() currentUser: UserPayload,
@@ -70,11 +78,14 @@ export class BoardController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'User update a board name or description' })
+  @ApiResponse({
+    status: 200,
+    description: 'Board successfully updated',
+    type: UpdateBoardResponse200,
+  })
   async update(
-    @Body(updateBoardBodyValidationPipe) {
-      name,
-      description,
-    }: UpdateBoardBodySchema,
+    @Body(new ValidationPipe()) { name, description }: UpdateBoardDTO,
     @CurrentUser() currentUser: UserPayload,
     @Param('id') id: string,
   ) {
@@ -90,5 +101,7 @@ export class BoardController {
         'Sorry, its not possible to update board at this time, try again later.',
       )
     }
+
+    return { board: BoardPresenter.toHTTP(result.board) }
   }
 }

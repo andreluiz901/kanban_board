@@ -6,7 +6,7 @@
     "deleteOutDir": true,
     "plugins": [
       {
-        "name": "@nest/swagger",
+        "name": "@nestjs/swagger",
         "options": {
           "classValidatorShim": true,
           "introspectComments": true

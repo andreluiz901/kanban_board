@@ -14,12 +14,9 @@ interface EditBoardUseCaseRequest {
   description: string
 }
 
-type EditBoardUseCaseResponse =
-  | {
-      board: Board
-    }
-  | BadRequestException
-  | ForbiddenException
+type EditBoardUseCaseResponse = {
+  board: Board
+}
 
 @Injectable()
 export class EditBoardUseCase {
@@ -54,7 +51,7 @@ export class EditBoardUseCase {
       new UniqueEntityId(board.id.toValue()),
     )
 
-    const boardUpdated = await this.boardRepository.update(dataToUpdateBoard)
+    await this.boardRepository.update(dataToUpdateBoard)
 
     return { board: dataToUpdateBoard }
   }
