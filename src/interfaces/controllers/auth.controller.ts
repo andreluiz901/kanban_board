@@ -6,13 +6,13 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common'
-import { ApiBearerAuth } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { Public } from 'src/application/auth/decorators/public'
 import { SignInDto } from 'src/application/auth/dto/sign-in.dto'
 import { AuthService } from 'src/application/auth/use-cases/auth.service'
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

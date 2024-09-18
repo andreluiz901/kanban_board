@@ -13,11 +13,11 @@ import { CardsModule } from './application/card/cards.module'
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     BoardsModule,
     CollumnsModule,
     CardsModule,
-    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

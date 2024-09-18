@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  BadRequestException,
   UsePipes,
 } from '@nestjs/common'
 import { UsersService } from '../../application/users/use-cases/users.service'
@@ -22,7 +21,9 @@ import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe
 import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

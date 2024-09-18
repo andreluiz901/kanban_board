@@ -22,9 +22,10 @@ import {
   updateCollumnBodyValidationPipe,
 } from './schemas/collumns/update-collumn-body-schema'
 import { CollumnPresenter } from '../presenters/collumn-presenter'
-import { ApiBearerAuth } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiBearerAuth()
+@ApiTags('Collumns')
 @Controller('collumns')
 export class CollumnController {
   constructor(
