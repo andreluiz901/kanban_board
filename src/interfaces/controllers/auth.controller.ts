@@ -7,10 +7,16 @@ import {
   Post,
   Request,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Public } from 'src/application/auth/decorators/public'
-import { SignInDto } from 'src/application/auth/dto/sign-in.dto'
 import { AuthService } from 'src/application/auth/use-cases/auth.service'
+import { SignInResponse200 } from './dtos/auth/sign-in-response-200.dto'
+import { SignInDTO } from './dtos/auth/sign-in.dto'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -19,8 +25,15 @@ export class AuthController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Post('login')
-  signIn(@Body() signInDto: SignInDto) {
+  @ApiResponse({
+    status: 200,
+    description:
+      'User successfully login on application. Returns an access token to bearer auth',
+    type: SignInResponse200,
+  })
+  @ApiOperation({ summary: 'User successfully login on application' })
+  @Post('signIn')
+  signIn(@Body() signInDto: SignInDTO) {
     return this.authService.signIn(signInDto.email, signInDto.password)
   }
 

@@ -24,7 +24,7 @@ import {
 } from '@nestjs/swagger'
 import { UpdateBoardDTO } from './dtos/board/update-board.dto'
 import { CreateBoardResponse201 } from './dtos/board/create-board-response-201.dto'
-import { UpdateBoardResponse200 } from './dtos/board/create-board-response-200.dto'
+import { UpdateBoardResponse200 } from './dtos/board/update-board-response-200.dto'
 
 @ApiBearerAuth()
 @ApiTags('Boards')
