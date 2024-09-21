@@ -26,6 +26,9 @@ import { CreateCollumnResponse201 } from './dtos/collumn/create-collumn-response
 import { CreateCollumndDTO } from './dtos/collumn/create-collumn.dto'
 import { UpdateCollumnResponse200 } from './dtos/collumn/update-collumn-response-200.dto'
 import { UpdateCollumnDTO } from './dtos/collumn/update-collumn.dto'
+import { UpdateCollumnOrderUseCase } from 'src/application/collumns/use-cases/update-collumn-order'
+import { UpdateCollumnOrderDTO } from './dtos/collumn/update-collumn-order.dto'
+import { UpdateCollumnOrderResponse200 } from './dtos/collumn/update-collumn-order-response-200.dto'
 
 @ApiBearerAuth()
 @ApiTags('Collumns')
@@ -35,6 +38,7 @@ export class CollumnController {
     private readonly createCollumn: CreateCollumnUseCase,
     private readonly removeCollumn: RemoveCollumnUseCase,
     private readonly updateCollumn: EditCollumnUseCase,
+    private readonly updateCollumnOrder: UpdateCollumnOrderUseCase,
   ) {}
 
   @Post()
@@ -81,7 +85,7 @@ export class CollumnController {
     })
   }
 
-  @Patch(':id')
+  @Patch('/update/:id')
   @ApiResponse({
     status: 200,
     description: 'Collumn successfully updated',
@@ -104,5 +108,24 @@ export class CollumnController {
         'Sorry, its not possible to update collumn at this time, try again later.',
       )
     }
+  }
+
+  @Patch('/order/:board_id')
+  @ApiResponse({
+    status: 200,
+    description: 'Collumn order successfully updated',
+    type: UpdateCollumnOrderResponse200,
+  })
+  @ApiOperation({ summary: 'User update his own collumns order' })
+  async updateOrder(
+    @Body(new ValidationPipe()) { collumnOrder }: UpdateCollumnOrderDTO,
+    @CurrentUser() currentUser: UserPayload,
+    @Param('board_id') boardId: string,
+  ) {
+    await this.updateCollumnOrder.execute({
+      boardId,
+      collumnOrder,
+      currentUserId: currentUser.id,
+    })
   }
 }

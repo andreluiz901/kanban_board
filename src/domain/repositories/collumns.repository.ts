@@ -6,4 +6,8 @@ export abstract class CollumnsRepository {
   abstract delete(collumnId: string): Promise<void>
   abstract update(collumn: Collumn): Promise<void>
   abstract findLastCollumnByBoardId(boardId: string): Promise<Collumn | null>
+  abstract updateOrder(
+    collumnOrder: { id: string; order: number }[],
+  ): Promise<void>
+  abstract countByBoardId(boardId: string): Promise<number | null>
 }

@@ -55,4 +55,24 @@ export class PrismaCollumnRepository implements CollumnsRepository {
 
     return await PrismaCollumnMapper.toDomain(lastCollumn)
   }
+
+  async updateOrder(
+    collumnOrder: { id: string; order: number }[],
+  ): Promise<void> {
+    const promisesUpdateOrder = await collumnOrder.map(async (collumn) => {
+      await this.prisma.collumn.update({
+        where: { id: collumn.id },
+        data: { order: collumn.order },
+      })
+    })
+    const result = await Promise.all(promisesUpdateOrder)
+  }
+
+  async countByBoardId(boardId: string): Promise<number | null> {
+    return await this.prisma.collumn.count({
+      where: {
+        boardId,
+      },
+    })
+  }
 }

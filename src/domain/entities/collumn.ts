@@ -31,6 +31,11 @@ export class Collumn extends Entity<CollumnProps> {
     return this.props.updatedAt
   }
 
+  set order(order: number) {
+    this.props.order = order
+    this.touch()
+  }
+
   static create(
     props: Optional<CollumnProps, 'createdAt'>,
     id?: UniqueEntityId,
@@ -44,5 +49,9 @@ export class Collumn extends Entity<CollumnProps> {
     )
 
     return collumn
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
   }
 }
