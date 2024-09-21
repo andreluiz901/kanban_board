@@ -116,7 +116,11 @@ export class CollumnController {
     description: 'Collumn order successfully updated',
     type: UpdateCollumnOrderResponse200,
   })
-  @ApiOperation({ summary: 'User update his own collumns order' })
+  @ApiOperation({
+    summary: 'User update his own collumns order',
+    description:
+      'Inform an array, sorted ascendingly by order, starting from 0 in each collumn, as in example',
+  })
   async updateOrder(
     @Body(new ValidationPipe()) { collumnOrder }: UpdateCollumnOrderDTO,
     @CurrentUser() currentUser: UserPayload,

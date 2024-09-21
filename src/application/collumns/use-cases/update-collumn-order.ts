@@ -59,6 +59,12 @@ export class UpdateCollumnOrderUseCase {
       order++
       const foundCollumn = await this.collumnRepository.findById(collumn.id)
 
+      if (foundCollumn.boardId.toValue() !== boardId) {
+        throw new BadRequestException(
+          'One or more collumns not match with the informed board to update order',
+        )
+      }
+
       if (!foundCollumn) {
         throw new BadRequestException('One or more collumns not found')
       }
