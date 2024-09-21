@@ -122,10 +122,12 @@ export class CollumnController {
     @CurrentUser() currentUser: UserPayload,
     @Param('board_id') boardId: string,
   ) {
-    await this.updateCollumnOrder.execute({
+    const result = await this.updateCollumnOrder.execute({
       boardId,
       collumnOrder,
       currentUserId: currentUser.id,
     })
+
+    return { data: result.map(CollumnPresenter.toHTTP) }
   }
 }

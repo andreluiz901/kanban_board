@@ -13,7 +13,7 @@ interface UpdateCollumnOrderUseCaseRequest {
   collumnOrder: { id: string; order: number }[]
 }
 
-type UpdateCollumnOrderUseCaseResponse = null
+type UpdateCollumnOrderUseCaseResponse = Collumn[]
 
 @Injectable()
 export class UpdateCollumnOrderUseCase {
@@ -47,24 +47,36 @@ export class UpdateCollumnOrderUseCase {
       throw new BadRequestException('Error on counting board collumns!')
     }
 
-    const dataToUpdate = []
+    const dataToUpdate: Collumn[] = []
+    let order = 0
 
-    for await (const collumn of collumnOrder) {
+    for (const collumn of collumnOrder) {
+      if (collumn.order !== order) {
+        throw new BadRequestException(
+          'Please inform correct collumn order in ascending way, starting at 0: [0, 1, 2, 3...].',
+        )
+      }
+      order++
       const foundCollumn = await this.collumnRepository.findById(collumn.id)
 
       if (!foundCollumn) {
         throw new BadRequestException('One or more collumns not found')
       }
-      foundCollumn.order = collumn.order
+
       const updateOrderFoundCollumn = Collumn.create(
-        foundCollumn,
+        {
+          name: foundCollumn.name,
+          boardId: foundCollumn.boardId,
+          order: collumn.order,
+          createdAt: foundCollumn.createdAt,
+        },
         foundCollumn.id,
       )
+      dataToUpdate.push(updateOrderFoundCollumn)
     }
 
-    console.log('dataToUpdate', dataToUpdate[0])
-    await this.collumnRepository.updateOrder(collumnOrder)
+    const result = await this.collumnRepository.updateOrder(dataToUpdate)
 
-    return null
+    return result
   }
 }

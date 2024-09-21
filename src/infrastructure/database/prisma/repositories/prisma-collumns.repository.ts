@@ -56,16 +56,26 @@ export class PrismaCollumnRepository implements CollumnsRepository {
     return await PrismaCollumnMapper.toDomain(lastCollumn)
   }
 
-  async updateOrder(
-    collumnOrder: { id: string; order: number }[],
-  ): Promise<void> {
-    const promisesUpdateOrder = await collumnOrder.map(async (collumn) => {
-      await this.prisma.collumn.update({
-        where: { id: collumn.id },
-        data: { order: collumn.order },
+  async updateOrder(collumnsToUpdate: Collumn[]): Promise<Collumn[]> {
+    try {
+      const transactions = await this.prisma.$transaction(
+        await collumnsToUpdate.map((collumn) =>
+          this.prisma.collumn.update({
+            where: { id: collumn.id.toValue() },
+            data: { order: collumn.order },
+          }),
+        ),
+      )
+
+      const result = await this.prisma.collumn.findMany({
+        where: { boardId: transactions[0].boardId },
+        orderBy: { order: 'asc' },
       })
-    })
-    const result = await Promise.all(promisesUpdateOrder)
+
+      return result.map(PrismaCollumnMapper.toDomain)
+    } catch (error) {
+      console.log('error during transaction: ', error)
+    }
   }
 
   async countByBoardId(boardId: string): Promise<number | null> {
