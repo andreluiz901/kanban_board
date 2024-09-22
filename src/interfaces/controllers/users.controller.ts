@@ -9,10 +9,7 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { UsersService } from '../../application/users/use-cases/users.service'
-import {
-  CreateUserDto,
-  createUserSchema,
-} from '../../application/users/schemas/create-user.schema'
+import { createUserSchema } from '../../application/users/schemas/create-user.schema'
 import {
   UpdateUserDto,
   updateUserSchema,
@@ -21,11 +18,18 @@ import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe
 import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { RegisterUserUseCase } from 'src/application/users/use-cases/register-user.usecase'
 import { UserPresenter } from '../presenters/user-presenter'
 import { signUpDTO } from './dtos/user/sign-up.dto'
-import { signUpResponse201 } from './dtos/user/sign-up-response-201.dto'
+import { SignUpResponse201 } from './dtos/user/sign-up-response-201.dto'
+import { UserProfileUseCase } from 'src/application/users/use-cases/user-profile.usecase'
+import { ProfileParamDTO } from './dtos/user/profile-param.dto'
 
 @ApiTags('Users')
 @Controller('users')
@@ -33,6 +37,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly registerUser: RegisterUserUseCase,
+    private readonly userProfile: UserProfileUseCase,
   ) {}
 
   @Public()
@@ -40,7 +45,7 @@ export class UsersController {
   @ApiResponse({
     status: 201,
     description: 'User successfully registered',
-    type: signUpResponse201,
+    type: SignUpResponse201,
   })
   @ApiOperation({ summary: 'User successfully registered' })
   @UsePipes(new ZodValidationPipe(createUserSchema))
@@ -56,24 +61,31 @@ export class UsersController {
     return { user: UserPresenter.toHTTP(result.user) }
   }
 
-  @Get()
-  async findAll() {
-    const allusers = await this.usersService.findAll()
+  // @Get()
+  // async findAll() {
+  //   const allusers = await this.usersService.findAll()
 
-    return allusers.map((user) => {
-      return {
-        id: user.id.toValue(),
-        email: user.email,
-        username: user.username,
-      }
-    })
-  }
+  //   return allusers.map((user) => {
+  //     return {
+  //       id: user.id.toValue(),
+  //       email: user.email,
+  //       username: user.username,
+  //     }
+  //   })
+  // }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findOne(id)
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Fetch user own data profile',
+    type: SignUpResponse201,
+  })
+  @ApiOperation({ summary: 'Fetch user own data profile' })
+  @Get('/profile')
+  async profile(@CurrentUser() currentUser: UserPayload) {
+    const { user } = await this.userProfile.execute({ userId: currentUser.id })
 
-    return { id: user.id.toValue(), username: user.username, email: user.email }
+    return { user: UserPresenter.toHTTP(user) }
   }
 
   @Patch(':id')

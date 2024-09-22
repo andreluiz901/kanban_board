@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 
 class signUpResponse {
   @ApiProperty({
-    example: 'email@email.com',
+    example: '860c48a2-0a44-43a8-bfd2-c036df333f39',
   })
   id: string
 
@@ -12,13 +12,13 @@ class signUpResponse {
   username: string
 
   @ApiProperty({
-    example: 'mySecretPassword@123',
+    example: 'email@email.com',
     description: 'An string with user password',
   })
   email: string
 }
 
-export class signUpResponse201 {
+export class SignUpResponse201 {
   @ApiProperty()
   user: signUpResponse
 }

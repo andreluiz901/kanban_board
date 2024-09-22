@@ -17,6 +17,7 @@ import { Public } from 'src/application/auth/decorators/public'
 import { AuthService } from 'src/application/auth/use-cases/auth.service'
 import { SignInResponse200 } from './dtos/auth/sign-in-response-200.dto'
 import { SignInDTO } from './dtos/auth/sign-in.dto'
+import { MeResponse200 } from './dtos/auth/me-response-200.dto'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -38,8 +39,18 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Get('profile')
+  @ApiResponse({
+    status: 201,
+    description: 'Fetch current user data',
+    type: MeResponse200,
+  })
+  @ApiOperation({ summary: 'Get data of current user, using his auth token' })
+  @Get('me')
   async getProfile(@Request() req) {
-    return req.user
+    return {
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    }
   }
 }
