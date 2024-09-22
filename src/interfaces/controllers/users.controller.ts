@@ -21,9 +21,11 @@ import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe
 import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { RegisterUserUseCase } from 'src/application/users/use-cases/register-user.usecase'
 import { UserPresenter } from '../presenters/user-presenter'
+import { signUpDTO } from './dtos/user/sign-up.dto'
+import { signUpResponse201 } from './dtos/user/sign-up-response-201.dto'
 
 @ApiTags('Users')
 @Controller('users')
@@ -34,9 +36,15 @@ export class UsersController {
   ) {}
 
   @Public()
-  @Post()
+  @Post('signUp')
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered',
+    type: signUpResponse201,
+  })
+  @ApiOperation({ summary: 'User successfully registered' })
   @UsePipes(new ZodValidationPipe(createUserSchema))
-  async create(@Body() body: CreateUserDto) {
+  async create(@Body() body: signUpDTO) {
     const { email, username, password } = body
 
     const result = await this.registerUser.execute({
@@ -45,7 +53,7 @@ export class UsersController {
       password,
     })
 
-    return { data: UserPresenter.toHTTP(result.user) }
+    return { user: UserPresenter.toHTTP(result.user) }
   }
 
   @Get()
