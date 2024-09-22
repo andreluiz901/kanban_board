@@ -22,11 +22,16 @@ import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
 import { ApiTags } from '@nestjs/swagger'
+import { RegisterUserUseCase } from 'src/application/users/use-cases/register-user.usecase'
+import { UserPresenter } from '../presenters/user-presenter'
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly registerUser: RegisterUserUseCase,
+  ) {}
 
   @Public()
   @Post()
@@ -34,13 +39,13 @@ export class UsersController {
   async create(@Body() body: CreateUserDto) {
     const { email, username, password } = body
 
-    const result = await this.usersService.create({
+    const result = await this.registerUser.execute({
       username,
       email,
       password,
     })
 
-    return { data: result }
+    return { data: UserPresenter.toHTTP(result.user) }
   }
 
   @Get()
