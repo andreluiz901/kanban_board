@@ -12,17 +12,9 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
-import {
-  CreateCardBodySchema,
-  createCardBodyValidationPipe,
-} from './schemas/card/create-card-body-schema'
 import { CreateCardUseCase } from 'src/application/card/use-cases/create-card.usecase'
 import { RemoveCardUseCase } from 'src/application/card/use-cases/delete-card.usecase'
 import { EditCardUseCase } from 'src/application/card/use-cases/edit-card.usecase'
-import {
-  UpdateCardBodySchema,
-  updateCardBodyValidationPipe,
-} from './schemas/card/update-card-body-schema'
 import { ToogleCardCompleteUseCase } from 'src/application/card/use-cases/toogle-card-complete.usecase'
 import { CardPresenter } from '../presenters/card-presenter'
 import {
@@ -34,6 +26,7 @@ import {
 import { CreateCardResponse201 } from './dtos/card/create-card-response-201.dto'
 import { CreateCardDTO } from './dtos/card/create-card.dto'
 import { UpdateCardResponse200 } from './dtos/card/update-card-response-200.dto'
+import { UpdateCardDTO } from './dtos/card/update-card.dto'
 
 @ApiBearerAuth()
 @ApiTags('Cards')
@@ -99,10 +92,7 @@ export class CardsController {
   })
   @ApiOperation({ summary: 'User update his own card name or description' })
   async update(
-    @Body(updateCardBodyValidationPipe) {
-      name,
-      description,
-    }: UpdateCardBodySchema,
+    @Body(new ValidationPipe()) { name, description }: UpdateCardDTO,
     @CurrentUser() currentUser: UserPayload,
     @Param('id') cardId: string,
   ) {

@@ -4,12 +4,10 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   ValidationPipe,
   HttpCode,
 } from '@nestjs/common'
-import { UsersService } from '../../application/users/use-cases/users.service'
 import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -33,7 +31,6 @@ import { DeleteAccountUserUseCase } from 'src/application/users/use-cases/delete
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService,
     private readonly registerUser: RegisterUserUseCase,
     private readonly userProfile: UserProfileUseCase,
     private readonly updateUser: UpdateUserUseCase,
