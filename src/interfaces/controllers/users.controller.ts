@@ -6,15 +6,9 @@ import {
   Patch,
   Param,
   Delete,
-  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import { UsersService } from '../../application/users/use-cases/users.service'
-import { createUserSchema } from '../../application/users/schemas/create-user.schema'
-import {
-  UpdateUserDto,
-  updateUserSchema,
-} from '../../application/users/schemas/update-user.schema'
-import { ZodValidationPipe } from 'src/interfaces/http/pipes/zod-validation.pipe'
 import { Public } from 'src/application/auth/decorators/public'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -29,7 +23,9 @@ import { UserPresenter } from '../presenters/user-presenter'
 import { signUpDTO } from './dtos/user/sign-up.dto'
 import { SignUpResponse201 } from './dtos/user/sign-up-response-201.dto'
 import { UserProfileUseCase } from 'src/application/users/use-cases/user-profile.usecase'
-import { ProfileParamDTO } from './dtos/user/profile-param.dto'
+import { UpdateUserUseCase } from 'src/application/users/use-cases/update-user.usecase'
+import { UpdateUserDTO } from './dtos/user/update-user.dto'
+import { UpdateUserResponse200 } from './dtos/user/update-user-response-200.dto'
 
 @ApiTags('Users')
 @Controller('users')
@@ -38,6 +34,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly registerUser: RegisterUserUseCase,
     private readonly userProfile: UserProfileUseCase,
+    private readonly updateUser: UpdateUserUseCase,
   ) {}
 
   @Public()
@@ -48,8 +45,7 @@ export class UsersController {
     type: SignUpResponse201,
   })
   @ApiOperation({ summary: 'User successfully registered' })
-  @UsePipes(new ZodValidationPipe(createUserSchema))
-  async create(@Body() body: signUpDTO) {
+  async create(@Body(new ValidationPipe()) body: signUpDTO) {
     const { email, username, password } = body
 
     const result = await this.registerUser.execute({
@@ -88,13 +84,23 @@ export class UsersController {
     return { user: UserPresenter.toHTTP(user) }
   }
 
-  @Patch(':id')
+  @Patch('/update')
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully updated',
+    type: UpdateUserResponse200,
+  })
+  @ApiOperation({ summary: 'User update his own profile name or email' })
   async update(
-    @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
+    @Body(new ValidationPipe()) updateUserDto: UpdateUserDTO,
     @CurrentUser() currentUser: UserPayload,
-    @Param('id') id: string,
   ) {
-    return await this.usersService.update(id, updateUserDto, currentUser.id)
+    const { userUpdated } = await this.updateUser.execute({
+      data: updateUserDto,
+      currentUserId: currentUser.id,
+    })
+
+    return { user: UserPresenter.toHTTP(userUpdated) }
   }
 
   @Delete(':id')

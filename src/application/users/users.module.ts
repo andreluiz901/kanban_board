@@ -5,10 +5,16 @@ import { DatabaseModule } from 'src/infrastructure/database/database.module'
 import { CryptoGraphyModule } from 'src/infrastructure/cryptography/cryptography.module'
 import { RegisterUserUseCase } from './use-cases/register-user.usecase'
 import { UserProfileUseCase } from './use-cases/user-profile.usecase'
+import { UpdateUserUseCase } from './use-cases/update-user.usecase'
 
 @Module({
   imports: [DatabaseModule, CryptoGraphyModule],
   controllers: [UsersController],
-  providers: [UsersService, RegisterUserUseCase, UserProfileUseCase],
+  providers: [
+    UsersService,
+    RegisterUserUseCase,
+    UserProfileUseCase,
+    UpdateUserUseCase,
+  ],
 })
 export class UsersModule {}
