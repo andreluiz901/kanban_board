@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ValidationPipe,
+  HttpCode,
 } from '@nestjs/common'
 import { UsersService } from '../../application/users/use-cases/users.service'
 import { Public } from 'src/application/auth/decorators/public'
@@ -26,6 +27,7 @@ import { UserProfileUseCase } from 'src/application/users/use-cases/user-profile
 import { UpdateUserUseCase } from 'src/application/users/use-cases/update-user.usecase'
 import { UpdateUserDTO } from './dtos/user/update-user.dto'
 import { UpdateUserResponse200 } from './dtos/user/update-user-response-200.dto'
+import { DeleteAccountUserUseCase } from 'src/application/users/use-cases/delete-account-user'
 
 @ApiTags('Users')
 @Controller('users')
@@ -35,6 +37,7 @@ export class UsersController {
     private readonly registerUser: RegisterUserUseCase,
     private readonly userProfile: UserProfileUseCase,
     private readonly updateUser: UpdateUserUseCase,
+    private readonly deleteAccountUser: DeleteAccountUserUseCase,
   ) {}
 
   @Public()
@@ -85,6 +88,7 @@ export class UsersController {
   }
 
   @Patch('/update')
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'User successfully updated',
@@ -103,11 +107,11 @@ export class UsersController {
     return { user: UserPresenter.toHTTP(userUpdated) }
   }
 
-  @Delete(':id')
-  async remove(
-    @Param('id') id: string,
-    @CurrentUser() currentUser: UserPayload,
-  ) {
-    return this.usersService.remove(id, currentUser.id)
+  @Delete('delete')
+  @ApiBearerAuth()
+  @HttpCode(204)
+  @ApiOperation({ summary: 'User delete his own account' })
+  async remove(@CurrentUser() currentUser: UserPayload) {
+    return this.deleteAccountUser.execute({ userId: currentUser.id })
   }
 }

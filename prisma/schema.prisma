@@ -21,7 +21,7 @@ model User {
   createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
   updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
-  Boards Board[]
+  Boards Board[] 
 
   @@map("users")
 }
@@ -34,7 +34,7 @@ model Board {
   createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
   updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
-  User     User      @relation(fields: [userId], references: [id])
+  User     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   Collumns Collumn[]
 
   @@map("boards")
@@ -48,7 +48,7 @@ model Collumn {
   createdAt DateTime @db.Timestamptz() @default(now()) @map("created_at") 
   updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
 
-  Board Board  @relation(fields: [boardId], references: [id])
+  Board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   Cards Card[]
 
   @@map("collumns")
@@ -64,7 +64,7 @@ model Card {
   updatedAt DateTime? @db.Timestamptz() @updatedAt @map("updated_at")
   collumnId   String  @map("collum_id")
 
-  Collumn Collumn @relation(fields: [collumnId], references: [id])
+  Collumn Collumn @relation(fields: [collumnId], references: [id], onDelete: Cascade)
 
   @@map("cards")
 }

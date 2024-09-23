@@ -6,6 +6,7 @@ import { CryptoGraphyModule } from 'src/infrastructure/cryptography/cryptography
 import { RegisterUserUseCase } from './use-cases/register-user.usecase'
 import { UserProfileUseCase } from './use-cases/user-profile.usecase'
 import { UpdateUserUseCase } from './use-cases/update-user.usecase'
+import { DeleteAccountUserUseCase } from './use-cases/delete-account-user'
 
 @Module({
   imports: [DatabaseModule, CryptoGraphyModule],
@@ -15,6 +16,7 @@ import { UpdateUserUseCase } from './use-cases/update-user.usecase'
     RegisterUserUseCase,
     UserProfileUseCase,
     UpdateUserUseCase,
+    DeleteAccountUserUseCase,
   ],
 })
 export class UsersModule {}
