@@ -5,6 +5,7 @@ import { CardsController } from 'src/interfaces/controllers/cards.controller'
 import { RemoveCardUseCase } from './use-cases/delete-card.usecase'
 import { EditCardUseCase } from './use-cases/edit-card.usecase'
 import { ToogleCardCompleteUseCase } from './use-cases/toogle-card-complete.usecase'
+import { UpdateCardOrderUseCase } from './use-cases/update-card-order.usecase'
 
 @Module({
   imports: [DatabaseModule],
@@ -14,6 +15,7 @@ import { ToogleCardCompleteUseCase } from './use-cases/toogle-card-complete.usec
     RemoveCardUseCase,
     EditCardUseCase,
     ToogleCardCompleteUseCase,
+    UpdateCardOrderUseCase,
   ],
 })
 export class CardsModule {}

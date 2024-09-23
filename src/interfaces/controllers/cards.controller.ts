@@ -27,6 +27,8 @@ import { CreateCardResponse201 } from './dtos/card/create-card-response-201.dto'
 import { CreateCardDTO } from './dtos/card/create-card.dto'
 import { UpdateCardResponse200 } from './dtos/card/update-card-response-200.dto'
 import { UpdateCardDTO } from './dtos/card/update-card.dto'
+import { UpdateCardOrderUseCase } from 'src/application/card/use-cases/update-card-order.usecase'
+import { UpdateCardOrderDTO } from './dtos/card/update-card-order.dto'
 
 @ApiBearerAuth()
 @ApiTags('Cards')
@@ -37,6 +39,7 @@ export class CardsController {
     private readonly removeCard: RemoveCardUseCase,
     private readonly updateCard: EditCardUseCase,
     private readonly toogleCardComplete: ToogleCardCompleteUseCase,
+    private readonly updateCardOrderUseCase: UpdateCardOrderUseCase,
   ) {}
 
   @Post()
@@ -84,12 +87,12 @@ export class CardsController {
     })
   }
 
-  @Patch(':id')
-  @ApiResponse({
-    status: 200,
-    description: 'Card successfully updated',
-    type: UpdateCardResponse200,
-  })
+  @Patch('/update/:id')
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Card successfully updated',
+  //   type: UpdateCardResponse200,
+  // })
   @ApiOperation({ summary: 'User update his own card name or description' })
   async update(
     @Body(new ValidationPipe()) { name, description }: UpdateCardDTO,
@@ -129,5 +132,26 @@ export class CardsController {
         'Sorry, its not possible to update collumn at this time, try again later.',
       )
     }
+  }
+
+  @Patch('/order/:card_id')
+  async updateOrder(
+    @CurrentUser() currentUser: UserPayload,
+    @Body(new ValidationPipe()) {
+      newCardOrder,
+      newCollumnId,
+      oldCardOrder,
+      oldCollumnId,
+    }: UpdateCardOrderDTO,
+    @Param('card_id') cardId: string,
+  ) {
+    return this.updateCardOrderUseCase.execute({
+      cardId,
+      currentUserId: currentUser.id,
+      newCardOrder,
+      newCollumnId,
+      oldCardOrder,
+      oldCollumnId,
+    })
   }
 }
