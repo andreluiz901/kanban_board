@@ -1,6 +1,6 @@
-import { Prisma, Board as PrismaBoard } from "@prisma/client";
-import { Board } from "src/domain/entities/board";
-import { UniqueEntityId } from "src/domain/entities/unique-entity-id";
+import { Prisma, Board as PrismaBoard } from '@prisma/client'
+import { Board } from 'src/domain/entities/board'
+import { UniqueEntityId } from 'src/domain/entities/unique-entity-id'
 
 export class PrismaBoardMapper {
   static toDomain(raw: PrismaBoard): Board {
@@ -11,7 +11,7 @@ export class PrismaBoardMapper {
         userId: new UniqueEntityId(raw.userId),
       },
       new UniqueEntityId(raw.id),
-    );
+    )
   }
 
   static toPrisma(board: Board): Prisma.BoardUncheckedCreateInput {
@@ -20,6 +20,6 @@ export class PrismaBoardMapper {
       name: board.name,
       description: board.description,
       userId: board.userId.toValue(),
-    };
+    }
   }
 }

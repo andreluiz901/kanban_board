@@ -5,6 +5,7 @@ import { BoardController } from 'src/interfaces/controllers/boards.controller'
 import { RemoveBoardUseCase } from './use-cases/delete-board.usecase'
 import { EditBoardUseCase } from './use-cases/edit-board.usecase'
 import { FetchAllOwnBoardsUseCase } from './use-cases/fetch-all-own-boards.usecase'
+import { FetchBoardUsecase } from './use-cases/fetch-board.usecase'
 
 @Module({
   imports: [DatabaseModule],
@@ -14,6 +15,7 @@ import { FetchAllOwnBoardsUseCase } from './use-cases/fetch-all-own-boards.useca
     RemoveBoardUseCase,
     EditBoardUseCase,
     FetchAllOwnBoardsUseCase,
+    FetchBoardUsecase,
   ],
 })
 export class BoardsModule {}

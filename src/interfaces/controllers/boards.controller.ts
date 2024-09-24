@@ -28,6 +28,8 @@ import { CreateBoardResponse201 } from './dtos/board/create-board-response-201.d
 import { UpdateBoardResponse200 } from './dtos/board/update-board-response-200.dto'
 import { FetchAllOwnBoardsUseCase } from 'src/application/board/use-cases/fetch-all-own-boards.usecase'
 import { FetchAllOwnBoardsResponse200 } from './dtos/board/fetch-all-own-boards-response-200.dto'
+import { FetchBoardUsecase } from 'src/application/board/use-cases/fetch-board.usecase'
+import { FetchBoardResponse200 } from './dtos/board/fetch-board-response-200.dto'
 
 @ApiBearerAuth()
 @ApiTags('Boards')
@@ -38,6 +40,7 @@ export class BoardController {
     private readonly removeBoard: RemoveBoardUseCase,
     private readonly updateBoard: EditBoardUseCase,
     private readonly fetchAllOwnBoardsUseCase: FetchAllOwnBoardsUseCase,
+    private readonly fetchBoardUsecase: FetchBoardUsecase,
   ) {}
 
   @Post()
@@ -121,5 +124,24 @@ export class BoardController {
       userId: currentUser.id,
     })
     return { boards: boards.map(BoardPresenter.toHTTP) }
+  }
+
+  @Get('/fetch/board/:board_id')
+  @ApiOperation({ summary: 'User fetch one your own board detail' })
+  @ApiResponse({
+    status: 200,
+    description: 'User fetch one your own board detail',
+    type: FetchBoardResponse200,
+  })
+  async fetchBoard(
+    @Param('board_id') boardId: string,
+    @CurrentUser() currentUser: UserPayload,
+  ) {
+    const board = await this.fetchBoardUsecase.execute({
+      boardId,
+      userId: currentUser.id,
+    })
+
+    return board
   }
 }
