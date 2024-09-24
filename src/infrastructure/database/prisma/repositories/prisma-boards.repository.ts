@@ -43,4 +43,16 @@ export class PrismaBoardRepository implements BoardsRepository {
       },
     })
   }
+
+  async findAllByUserId(userId: string): Promise<Board[] | null> {
+    const foundBoards = await this.prisma.board.findMany({
+      where: { userId },
+    })
+
+    if (foundBoards.length === 0) {
+      return null
+    }
+
+    return foundBoards.map(PrismaBoardMapper.toDomain)
+  }
 }

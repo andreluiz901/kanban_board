@@ -8,6 +8,7 @@ import {
   BadRequestException,
   ValidationPipe,
   HttpCode,
+  Get,
 } from '@nestjs/common'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
 import { CurrentUser } from 'src/infrastructure/auth/decorators/current-user.decorator'
@@ -25,6 +26,8 @@ import {
 import { UpdateBoardDTO } from './dtos/board/update-board.dto'
 import { CreateBoardResponse201 } from './dtos/board/create-board-response-201.dto'
 import { UpdateBoardResponse200 } from './dtos/board/update-board-response-200.dto'
+import { FetchAllOwnBoardsUseCase } from 'src/application/board/use-cases/fetch-all-own-boards.usecase'
+import { FetchAllOwnBoardsResponse200 } from './dtos/board/fetch-all-own-boards-response-200.dto'
 
 @ApiBearerAuth()
 @ApiTags('Boards')
@@ -34,6 +37,7 @@ export class BoardController {
     private readonly createBoard: CreateBoardUseCase,
     private readonly removeBoard: RemoveBoardUseCase,
     private readonly updateBoard: EditBoardUseCase,
+    private readonly fetchAllOwnBoardsUseCase: FetchAllOwnBoardsUseCase,
   ) {}
 
   @Post()
@@ -103,5 +107,19 @@ export class BoardController {
     }
 
     return { board: BoardPresenter.toHTTP(result.board) }
+  }
+
+  @Get('/fetch/all')
+  @ApiOperation({ summary: 'User fetch all your own boards' })
+  @ApiResponse({
+    status: 200,
+    description: 'User fetch all your own boards',
+    type: FetchAllOwnBoardsResponse200,
+  })
+  async fetchAllOwnBoards(@CurrentUser() currentUser: UserPayload) {
+    const { boards } = await this.fetchAllOwnBoardsUseCase.execute({
+      userId: currentUser.id,
+    })
+    return { boards: boards.map(BoardPresenter.toHTTP) }
   }
 }
