@@ -5,7 +5,7 @@ import { UsersModule } from './application/users/users.module'
 import { AuthModule } from './application/auth/auth.module'
 import { APP_GUARD } from '@nestjs/core'
 import { AuthGuard } from './interfaces/http/guards/auth-guard'
-// import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { ConfigModule } from '@nestjs/config'
 import { BoardsModule } from './application/board/boards.module'
 import { CollumnsModule } from './application/collumns/collumns.module'
@@ -21,10 +21,12 @@ import { CardsModule } from './application/card/cards.module'
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // ThrottlerModule.forRoot([{
-    //   ttl: 60000,
-    //   limit: 15
-    // }])
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 25,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [
@@ -33,10 +35,10 @@ import { CardsModule } from './application/card/cards.module'
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: ThrottlerGuard
-    // }
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
