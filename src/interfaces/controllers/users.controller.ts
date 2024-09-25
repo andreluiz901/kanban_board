@@ -57,19 +57,6 @@ export class UsersController {
     return { user: UserPresenter.toHTTP(result.user) }
   }
 
-  // @Get()
-  // async findAll() {
-  //   const allusers = await this.usersService.findAll()
-
-  //   return allusers.map((user) => {
-  //     return {
-  //       id: user.id.toValue(),
-  //       email: user.email,
-  //       username: user.username,
-  //     }
-  //   })
-  // }
-
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,

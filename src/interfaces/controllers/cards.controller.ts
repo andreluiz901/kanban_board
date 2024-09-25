@@ -88,11 +88,11 @@ export class CardsController {
   }
 
   @Patch('/update/:id')
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Card successfully updated',
-  //   type: UpdateCardResponse200,
-  // })
+  @ApiResponse({
+    status: 200,
+    description: 'Card successfully updated',
+    type: UpdateCardResponse200,
+  })
   @ApiOperation({ summary: 'User update his own card name or description' })
   async update(
     @Body(new ValidationPipe()) { name, description }: UpdateCardDTO,
