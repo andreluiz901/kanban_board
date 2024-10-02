@@ -23,6 +23,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
   await app.listen(configService.get('PORT'))
-  console.log(`Application is running on: ${await app.getUrl()}`)
+  console.log(`Application is running on: ${await app.getUrl()} 🚀`)
+  console.log(`API documentation available at: ${await app.getUrl()}/api 📖`)
 }
 bootstrap()
