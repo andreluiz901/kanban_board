@@ -40,7 +40,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Fetch current user data',
     type: MeResponse200,
   })
