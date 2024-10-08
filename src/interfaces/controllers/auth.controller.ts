@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Request,
 } from '@nestjs/common'
 import {
@@ -18,6 +19,8 @@ import { AuthService } from 'src/application/auth/use-cases/auth.service'
 import { SignInResponse200 } from './dtos/auth/sign-in-response-200.dto'
 import { SignInDTO } from './dtos/auth/sign-in.dto'
 import { MeResponse200 } from './dtos/auth/me-response-200.dto'
+import { RefresTokenDTO } from './dtos/auth/refresh-token.dto'
+import { RefresTokenResponse200 } from './dtos/auth/refresh-token-response-200.dto copy'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -52,5 +55,18 @@ export class AuthController {
       username: req.user.username,
       email: req.user.email,
     }
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully refresh auth  jwt token',
+    type: RefresTokenResponse200,
+  })
+  @ApiOperation({ summary: 'User successfully refresh auth  jwt token' })
+  @Post('refresh_token')
+  async refresToken(@Body() { refresh_token }: RefresTokenDTO) {
+    return this.authService.refreshToken(refresh_token)
   }
 }

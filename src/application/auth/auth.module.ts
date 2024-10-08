@@ -18,7 +18,7 @@ import { AuthController } from 'src/interfaces/controllers/auth.controller'
         return {
           secret: configService.get<string>('JWT_SECRET'),
           signOptions: {
-            expiresIn: `${60 * 120}s`, //15 min
+            expiresIn: `${60 * 120}s`, //2 hrs
           },
         }
       },
