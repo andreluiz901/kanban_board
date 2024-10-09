@@ -5,10 +5,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { DatabaseModule } from 'src/infrastructure/database/database.module'
 import { CryptoGraphyModule } from 'src/infrastructure/cryptography/cryptography.module'
 import { AuthController } from 'src/interfaces/controllers/auth.controller'
+import { CacheModule } from 'src/infrastructure/cache/cache.module'
 
 @Module({
   imports: [
     DatabaseModule,
+    CacheModule,
     CryptoGraphyModule,
     JwtModule.registerAsync({
       global: true,

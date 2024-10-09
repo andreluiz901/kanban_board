@@ -4,11 +4,13 @@ import { JwtService } from '@nestjs/jwt'
 import { HashComparer } from 'src/application/cryptography/hash-comparer'
 import { UsersRepository } from 'src/domain/repositories/users.repository'
 import { UserPayload } from 'src/infrastructure/auth/user-payload'
+import { CacheRepository } from 'src/infrastructure/cache/cache-repository'
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
+    private cacheRepository: CacheRepository,
     private hashComparer: HashComparer,
     private jwtService: JwtService,
     private configService: ConfigService,
@@ -38,13 +40,25 @@ export class AuthService {
       email: user.email,
     }
 
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    })
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '7 days',
+    })
+
+    const ttlCacheOnSeconds = 604800 // 7 days on seconds ( 60 * 60 * 24 * 7 )
+
+    await this.cacheRepository.set(
+      `session:${user.id.toValue()}`,
+      refreshToken,
+      ttlCacheOnSeconds,
+    )
+
     return {
-      access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '15m',
-      }),
-      refresh_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '7 days',
-      }),
+      access_token: accessToken,
+      refresh_token: refreshToken,
     }
   }
 
@@ -61,6 +75,14 @@ export class AuthService {
         throw new UnauthorizedException('Not Authorized')
       })
 
+    const cacheRefreshToken = await this.cacheRepository.get(
+      `session:${refreshTokenPayload.id}`,
+    )
+
+    if (!cacheRefreshToken) {
+      throw new UnauthorizedException('Not Authorized')
+    }
+
     const payload = {
       id: refreshTokenPayload.id,
       username: refreshTokenPayload.username,
@@ -74,6 +96,14 @@ export class AuthService {
     const newRefreshToken = await this.jwtService.signAsync(payload, {
       expiresIn: '7 days',
     })
+
+    const ttlCacheOnSeconds = 604800 // 7 days on seconds ( 60 * 60 * 24 * 7 )
+
+    await this.cacheRepository.set(
+      `session:${refreshTokenPayload.id}`,
+      newRefreshToken,
+      ttlCacheOnSeconds,
+    )
 
     return {
       accessToken: newAccessToken,
